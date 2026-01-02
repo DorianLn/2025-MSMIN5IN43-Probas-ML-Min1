@@ -7,7 +7,7 @@ env/
 __pycache__/
 *.py[cod]
 
-# Données et Modèles (fichiers lourds)
-*.pkl
-*.csv
-*.npy
+
+# IDE
+.idea/
+.vscode/
