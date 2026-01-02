@@ -18,14 +18,16 @@
 
 #### 1.1 Créer un environnement virtuel Python
 ```bash
-python -m venv venv
+# IMPORTANT: VizDoom nécessite Python 3.10 ou 3.11 maximum
+# Utilisez py -3.10 ou py -3.11 pour créer le venv
+py -3.10 -m venv venv
 # Sur Windows
 venv\Scripts\activate
 ```
 
 #### 1.2 Installer les dépendances requises
 ```bash
-pip install stable-baselines3 gymnasium pygame numpy matplotlib tensorboard
+pip install stable-baselines3 gymnasium pygame numpy matplotlib tensorboard vizdoom
 ```
 
 **Explication des packages** :
@@ -35,24 +37,29 @@ pip install stable-baselines3 gymnasium pygame numpy matplotlib tensorboard
 - `numpy` : Calculs numériques
 - `matplotlib` : Visualisation des résultats
 - `tensorboard` : Suivi de l'entraînement
+- `vizdoom` : Environnement Doom pour RL (nécessite Python ≤ 3.11)
 
 ---
 
 ### Étape 2 : Choisir l'environnement de test
 
-#### Deux catégories possibles :
+#### Environnements disponibles :
 
-**Option A : Jeux vidéo (recommandé pour démarrer)**
-- `CartPole-v1` ⭐ (PLUS SIMPLE - Commencer ici)
+**Option A : Jeux vidéo avec VizDoom (recommandé - projet principal)**
+- `VizdoomBasicCustom-v0` ⭐ (DOOM - Commencer ici)
+- Autres scénarios VizDoom : deadly_corridor, defend_the_center, etc.
+
+**Option B : Environnements Gymnasium classiques**
+- `CartPole-v1` (PLUS SIMPLE - pour tests rapides)
 - `LunarLander-v2` (Niveau moyen)
 - `Breakout-v4` (Niveau avancé - nécessite `stable-baselines3[atari]`)
 
-**Option B : Systèmes physiques (plus complexes)**
+**Option C : Systèmes physiques**
 - `Pendulum-v1` (Pendule inversé)
 - `MountainCar-v0` (Voiture en montagne)
 
-### ✅ Recommandation pour débuter :
-**Commencer avec `CartPole-v1`** (simple, rapide, bon pour les tests)
+### ✅ Recommandation pour ce projet :
+**Utiliser `VizdoomBasicCustom-v0`** avec le WAD Ultimate Doom fourni dans le dossier `games/`
 
 ---
 
@@ -69,9 +76,9 @@ GroupeRL/
 │   ├── test_agent.py
 │   └── benchmark_algos.py
 ├── models/
-│   ├── ppo_cartpole.zip
-│   ├── dqn_cartpole.zip
-│   └── sac_cartpole.zip
+│   ├── ppo_doom.zip
+│   ├── dqn_doom.zip
+│   └── sac_doom.zip
 ├── results/
 │   └── comparaison_algos.png
 └── REALISATION.md
@@ -86,30 +93,63 @@ GroupeRL/
 **Fichier** : `scripts/train_ppo.py`
 
 ```python
-import gymnasium as gym
+import os
+import gymnasium
+from gymnasium.envs.registration import register
 from stable_baselines3 import PPO
-from stable_baselines3.common.callbacks import EvalCallback
+
+# Créer le dossier models s'il n'existe pas
+os.makedirs("models", exist_ok=True)
+
+print("=" * 60)
+print("🚀 Entraînement PPO sur Doom (VizDoom)")
+print("=" * 60)
+
+# Vérifier si VizDoom est installé
+try:
+    import vizdoom
+    print("✅ VizDoom détecté")
+except ImportError:
+    print("❌ VizDoom n'est pas installé. Installez-le avec : pip install vizdoom")
+    print("   Note: Nécessite Python 3.11 ou antérieur pour pygame.")
+    exit(1)
+
+# WAD path
+wad_path = "../games/DOOM.WAD"
+if not os.path.exists(wad_path):
+    print(f"❌ WAD non trouvé à {wad_path}")
+    print("   Placez DOOM.WAD dans le dossier games/")
+    exit(1)
+
+print(f"✅ WAD trouvé : {wad_path}")
+
+# Enregistrer l'environnement
+register(
+    id='VizdoomBasicCustom-v0',
+    entry_point='vizdoom.gymnasium_wrapper:VizdoomEnv',
+    kwargs={'scenario': 'basic', 'wad': wad_path}
+)
 
 # Créer l'environnement
-env = gym.make("CartPole-v1")
+env = gymnasium.make('VizdoomBasicCustom-v0')
 
-# Créer le modèle PPO
+# Créer le modèle PPO avec CNN pour les images
 model = PPO(
-    "MlpPolicy",
+    "CnnPolicy",  # Utilise CNN pour traiter les images
     env,
     n_steps=2048,
     batch_size=64,
     n_epochs=10,
-    learning_rate=3e-4,
+    learning_rate=1e-4,  # Plus petit pour stabilité
     verbose=1,
-    device="cpu"  # ou "cuda" si GPU disponible
+    device="cpu"
 )
 
 # Entraîner
 model.learn(total_timesteps=50000)
 
 # Sauvegarder
-model.save("models/ppo_cartpole")
+model.save("models/ppo_doom")
 
 env.close()
 print("✅ Entraînement PPO terminé !")

@@ -1,0 +1,59 @@
+
+{
+	"version" : 1,
+	"gameId" : "1435827232",
+	"rootGameId" : "1435827232",
+	"standalone" : true,
+	"dependencyGameId" : "",
+	"language"         : "english",
+	"name"             : "The Ultimate DOOM",
+	"playTasks"        : [
+		{
+			"isPrimary" : true,
+			"type"      : "FileTask",
+			"path"      : "DOSBOX\\dosbox.exe",
+			"workingDir" : "DOSBOX",
+			"arguments"  : "-conf \"..\\dosbox_doom.conf\" -conf \"..\\dosbox_doom_single.conf\" -noconsole -c \"exit\""
+		},
+		{
+			"name" : "Graphic Mode Setup",
+			"type" : "FileTask",
+			"path" : "DOSBOX\\GOGDOSConfig.exe",
+			"workingDir" : "DOSBOX",
+			"arguments"  : "1435827232"
+		},
+		{
+			"name" : "Run Multiplayer Game",
+			"type" : "FileTask",
+			"path" : "DOSBOX\\GOGDOSConfig.exe",
+			"workingDir" : "DOSBOX",
+			"arguments"  : "1435827232 NET"
+		},
+		{
+			"name" : "Launch Settings",
+			"type" : "FileTask",
+			"path" : "DOSBOX\\dosbox.exe",
+			"workingDir" : "DOSBOX",
+			"arguments"  : "-conf \"..\\dosbox_doom.conf\" -conf \"..\\dosbox_doom_settings.conf\" -noconsole -c \"exit\""
+		},
+		{
+			"name" : "Doom Bible",
+			"type" : "FileTask",
+			"path" : "Doom Bible.pdf",
+			"workingDir" : ""
+		}
+	],
+	"supportTasks"     : [
+		{
+			"name" : "Support",
+			"type" : "URLTask",
+			"link" : "http://www.gog.com/en/support/the_ultimate_doom"
+		},
+		{
+			"name" : "Manual",
+			"type" : "FileTask",
+			"path" : "Manual.pdf",
+			"workingDir" : ""
+		}
+	]
+}

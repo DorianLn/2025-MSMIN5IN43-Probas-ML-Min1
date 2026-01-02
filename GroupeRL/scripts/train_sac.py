@@ -1,53 +1,82 @@
 """
-Entraînement d'un agent SAC sur Pendulum-v1
-
-Note: SAC est conçu pour les environnements continus.
-Pendulum-v1 a des actions continues (contrairement à CartPole qui est discret).
+Entraînement d'un agent SAC sur Doom (VizDoom)
+Utilise le WAD Ultimate Doom fourni
 """
 
-import gymnasium as gym
-from stable_baselines3 import SAC
 import os
+import gymnasium
+from gymnasium.envs.registration import register
+from stable_baselines3 import SAC
 
 # Créer le dossier models s'il n'existe pas
 os.makedirs("models", exist_ok=True)
 
 print("=" * 60)
-print("🚀 Entraînement SAC sur Pendulum-v1")
+print("🚀 Entraînement SAC sur Doom (VizDoom)")
 print("=" * 60)
 
+# Vérifier si VizDoom est installé
+try:
+    import vizdoom
+    print("✅ VizDoom détecté")
+except ImportError:
+    print("❌ VizDoom n'est pas installé. Installez-le avec : pip install vizdoom")
+    print("   Note: Nécessite Python 3.11 ou antérieur pour pygame.")
+    exit(1)
+
+# Copier le WAD si nécessaire (assumer qu'il est dans ../games/DOOM.WAD)
+wad_path = "../games/DOOM.WAD"
+if not os.path.exists(wad_path):
+    print(f"❌ WAD non trouvé à {wad_path}")
+    print("   Placez DOOM.WAD dans le dossier games/")
+    exit(1)
+
+print(f"✅ WAD trouvé : {wad_path}")
+
+# Enregistrer un environnement personnalisé VizDoom
+register(
+    id='VizdoomBasicCustom-v0',
+    entry_point='vizdoom.gymnasium_wrapper:VizdoomEnv',
+    kwargs={'scenario': 'basic', 'wad': wad_path}
+)
+
 # Créer l'environnement
-env = gym.make("Pendulum-v1")
-print(f"✅ Environnement créé : Pendulum-v1")
+env = gymnasium.make('VizdoomBasicCustom-v0')
+print(f"✅ Environnement créé : VizdoomBasicCustom-v0")
 print(f"   - Espace d'observation : {env.observation_space}")
 print(f"   - Espace d'action : {env.action_space}")
 
-# Créer le modèle SAC avec les hyperparamètres
+# Créer le modèle SAC avec CNN pour les images
 model = SAC(
-    "MlpPolicy",
+    "CnnPolicy",  # Utilise CNN pour traiter les images
     env,
-    learning_rate=3e-4,      # Taux d'apprentissage
-    buffer_size=10000,       # Taille du replay buffer
-    learning_starts=100,     # Commencer à apprendre rapidement
-    verbose=1,               # Afficher les logs
-    device="cpu"             # "cuda" si GPU disponible
+    learning_rate=3e-4,
+    buffer_size=10000,
+    learning_starts=100,
+    verbose=1,
+    device="cpu"
 )
 
 print(f"\n✅ Modèle SAC créé avec les hyperparamètres")
+print(f"   - Policy : CnnPolicy (pour images)")
 print(f"   - Learning rate : 3e-4")
 print(f"   - Buffer size : 10000")
 print(f"   - Learning starts : 100")
 
 # Entraîner le modèle
 print(f"\n⏳ Entraînement en cours... (50,000 timesteps)")
-print(f"   Cela devrait prendre environ 2-3 minutes...")
+print(f"   Doom est complexe, cela peut prendre du temps...")
 print("-" * 60)
 
 model.learn(total_timesteps=50000)
 
 # Sauvegarder le modèle
-model.save("models/sac_pendulum")
+model.save("models/sac_doom")
 print("-" * 60)
+print(f"\n✅ Entraînement SAC sur Doom terminé avec succès !")
+print(f"   Modèle sauvegardé : models/sac_doom.zip")
+
+env.close()
 print(f"\n✅ Entraînement SAC terminé avec succès !")
 print(f"   Modèle sauvegardé : models/sac_pendulum.zip")
 

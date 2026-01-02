@@ -1,0 +1,47 @@
+// DM configuration for Ultimate Doom. Also works with registered Doom,
+// just don't select levels from episode 4!
+// By Simon Howard (Fraggle)
+TITLE=Ultimate Doom
+// warp type should be "em" for episode, map or "map"
+WARPTYPE=em
+EXENAME=doom.exe
+// set class_select to "0" for non-Hexen games
+CLASS_SELECT=0
+MAXPLAYERS=4
+// Levels from Ultimate Doom:
+MAP11=Hangar
+MAP12=Nuclear Plant
+MAP13=Toxin Refinery
+MAP14=Command Control
+MAP15=Phobos Lab
+MAP16=Central Processing
+MAP17=Computer Station
+MAP18=Phobos Anomaly
+MAP19=Military Base
+MAP21=Deimos Anomaly
+MAP22=Containment Area
+MAP23=Refinery
+MAP24=Deimos Lab
+MAP25=Command Center
+MAP26=Halls of the Damned
+MAP27=Spawning Vats
+MAP28=Tower of Babel
+MAP29=Fortress of Mystery
+MAP31=Hell Keep
+MAP32=Slough of Despair
+MAP33=Pandemonium
+MAP34=House of Pain
+MAP35=Unholy Cathedral
+MAP36=Mt. Erebus
+MAP37=Limbo
+MAP38=Dis
+MAP39=Warrens
+MAP41=Hell Beneath
+MAP42=Perfect Hatred
+MAP43=Sever The Wicked
+MAP44=Unruly Evil
+MAP45=They Will Repent
+MAP46=Against Thee Wickedly
+MAP47=And Hell Followed
+MAP48=Unto The Cruel
+MAP49=Fear
