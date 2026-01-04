@@ -1,163 +1,87 @@
-📰 Détection de Fake News par NLP Avancé et Transformers
-📌 Présentation du projet
+# 📰 Détection de Fake News par NLP Avancé & Transformers
 
-Ce projet s’inscrit dans le cadre du module de NLP avancé pour le traitement de bases de données.
-L’objectif est de concevoir un système intelligent de détection de fake news, basé sur des modèles Transformers pré-entraînés et fine-tunés, capables de traiter des articles de presse en anglais et en français.
+## 📌 Présentation du projet
+Ce projet a été réalisé dans le cadre du **module de NLP avancé**.  
+L’objectif principal est de concevoir un **système intelligent de détection de Fake News**, capable de distinguer des articles **vrais** et **faux** en **anglais** et en **français**, en s’appuyant sur des **modèles Transformers de l’état de l’art**.
 
-Le projet est réalisé en groupe et combine :
+Une attention particulière a été portée à la **résilience des modèles face à la désinformation sophistiquée**, notamment les contenus complotistes bien rédigés, via des **stratégies avancées de calibration et de pondération des erreurs**.
 
-des techniques avancées de Traitement Automatique du Langage Naturel (TALN),
+---
 
-l’exploitation de datasets et modèles via Hugging Face,
+## 👥 Membres du groupe
+- **Nom Prénom**
+- **Nom Prénom**
+- **Nom Prénom**
 
-et le développement d’une interface utilisateur pour une utilisation concrète.
+*(à compléter)*
 
-👥 Membres du groupe
+---
 
-Lamyae TALA
-Safe BERRICHI
-Pauline GOFFINET
+## 🎯 Objectifs techniques
+- **Multilinguisme**  
+  Fine-tuning de modèles spécifiques pour l’anglais et le français.
 
-🎯 Objectifs du projet
+- **Data Augmentation**  
+  Utilisation de la **Back-Translation (FR ↔ EN)** pour enrichir et équilibrer les jeux de données d’entraînement.
 
-Détecter automatiquement si une information est vraie ou fausse
+- **Optimisation de la précision**  
+  Implémentation d’une **fonction de perte pondérée (Weighted Cross-Entropy)** afin de pénaliser davantage les faux négatifs.
 
-Appliquer des techniques de NLP avancé sur de grandes bases de données textuelles
+- **Calibration de l’inférence**  
+  Mise en place d’un **seuil de suspicion personnalisé** pour détecter des signaux faibles de désinformation.
 
-Fine-tuner et comparer plusieurs modèles Transformers
+---
 
-Gérer le multilinguisme (anglais / français)
+## 🧠 Modèles & stratégies
 
-Mettre en place une interface interactive de vérification des news
+### 🔹 Modèles pour l’anglais
+- **BERT** (`bert-base-uncased`)
+- **RoBERTa** (`roberta-base`)  
+  → Meilleure compréhension contextuelle et robustesse linguistique.
 
-🧠 Modèles utilisés
-🔹 Données en anglais
+### 🔹 Modèle pour le français
+- **CamemBERT** (`camembert-base`)  
+  → Fine-tuning avec **régularisation stricte (Weight Decay)** afin de limiter le biais stylistique et le sur-apprentissage.
 
-Deux modèles Transformers ont été fine-tunés pour la détection de fake news en anglais :
+---
 
-BERT (bert-base-uncased)
+## 🧪 Méthodologie avancée
+Pour faire face aux **Fake News très bien rédigées**, nous avons mis en œuvre les techniques suivantes :
 
-RoBERTa (roberta-base)
+- **Back-Translation**  
+  Traduction automatique via *Helsinki-NLP* pour enrichir la classe minoritaire.
 
-Ces modèles permettent une comparaison des performances sur les données anglophones.
+- **Weighted Trainer**  
+  Pondération des classes :
+  - VRAI : **1.0**
+  - FAKE : **3.0**  
+  afin de rendre le modèle plus vigilant face à la désinformation.
 
-🔹 Données en français
+- **Ultra-Suspicious Threshold**  
+  Ajustement du seuil de décision lors de l’inférence :  
+  un article est signalé comme **suspect** dès que la confiance en la classe *VRAI* descend sous **99.99%**.
 
-Pour les articles en français, nous avons utilisé :
+---
 
-CamemBERT (camembert-base)
+## 🖥️ Interface utilisateur
+Une **interface interactive** permet à l’utilisateur de saisir un texte et d’obtenir un diagnostic immédiat selon le modèle choisi.
 
-CamemBERT est un modèle spécifiquement entraîné pour la langue française, ce qui le rend particulièrement adapté à la détection de fake news en français.
+| Bouton | Langue | Modèle |
+|------|------|------|
+| 🇫🇷 CamemBERT | Français | CamemBERT v2 (calibré) |
+| 🇬🇧 BERT | Anglais | BERT-base |
+| 🇬🇧 RoBERTa | Anglais | RoBERTa-base |
 
-🗄️ Données & Stockage des modèles
+---
 
-Les datasets sont chargés depuis Hugging Face Datasets
-
-Les modèles fine-tunés sont :
-
-sauvegardés localement,
-
-puis stockés et versionnés sur Hugging Face Hub pour faciliter le partage, la réutilisation et la reproductibilité
-
-🖥️ Interface utilisateur
-
-Une interface interactive permet à l’utilisateur de vérifier une news en quelques clics.
-
-🎛️ Fonctionnalités de l’interface
-
-L’utilisateur peut :
-
-saisir le texte d’une news,
-
-choisir le modèle de vérification via trois boutons :
-
-Bouton	Langue	Modèle
-🇫🇷 CamemBERT	Français	CamemBERT
-🇬🇧 BERT	Anglais	BERT
-🇬🇧 RoBERTa	Anglais	RoBERTa
-
-L’interface retourne :
-
-la prédiction (Fake / Real),
-
-un score de confiance associé.
-
-🗂️ Structure du projet
-FakeNews-Detection/
-│
+## 🗂️ Structure du projet
+```text
+.
 ├── notebooks/
-│   ├── notebook_1_BERT.ipynb
-│   ├── notebook_2_RoBERTa.ipynb
-│   └── notebook_3_CamemBERT.ipynb
-│
+│   ├── EN_Fakenews_Bert.ipynb      # Pipeline anglais - BERT
+│   ├── EN_fakenews_RoBERTa.ipynb   # Pipeline anglais - RoBERTa
+│   └── FR_Fake.ipynb               # Pipeline français (augmentation + calibration)
 ├── interface/
-│   └── app.py
-│
-├── data/
-│   └── datasets (Hugging Face)
-│
-├── models/
-│   ├── bert/
-│   ├── roberta/
-│   └── camembert/
-│
-├── results/
-│   └── metrics_et_evaluations/
-│
+│   └── app.py                     # Application Streamlit / Gradio
+├── .gitignore                     # Exclusion des modèles > 100 Mo
 └── README.md
-
-⚙️ Environnement technique
-
-Langage : Python
-
-Frameworks & bibliothèques :
-
-PyTorch
-
-Hugging Face Transformers & Datasets
-
-Scikit-learn
-
-Accélération matérielle :
-
-Entraînement sur GPU (CUDA)
-
-🧪 Méthodologie
-
-Chargement des données depuis Hugging Face
-
-Nettoyage et prétraitement professionnel des textes
-
-Tokenisation adaptée à chaque modèle
-
-Fine-tuning des modèles Transformers
-
-Évaluation à l’aide de métriques standard
-
-Intégration des modèles dans une interface utilisateur
-
-📊 Évaluation
-
-Les modèles sont évalués à l’aide de :
-
-Accuracy
-
-Precision
-
-Recall
-
-F1-score
-
-Matrice de confusion
-
-Une analyse comparative est réalisée entre BERT et RoBERTa pour les données anglaises, et CamemBERT pour les données françaises.
-
-🚀 Perspectives d’amélioration
-
-Ajout d’autres langues
-
-Déploiement de l’application en ligne
-
-Amélioration de l’explicabilité des prédictions
-
-Intégration de nouvelles sources de données
