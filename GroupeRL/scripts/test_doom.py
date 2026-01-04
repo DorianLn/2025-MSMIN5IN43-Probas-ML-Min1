@@ -20,7 +20,9 @@ except ImportError:
     exit(1)
 
 # Vérifier le WAD
-wad_path = "../games/DOOM.WAD"
+script_dir = os.path.dirname(os.path.abspath(__file__))
+wad_path = os.path.join(script_dir, "../../games/DOOM.WAD")
+wad_path = os.path.abspath(wad_path)
 if not os.path.exists(wad_path):
     print(f"❌ WAD non trouvé à {wad_path}")
     exit(1)

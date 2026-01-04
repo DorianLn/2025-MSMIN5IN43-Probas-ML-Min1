@@ -26,7 +26,9 @@ except ImportError:
     exit(1)
 
 # Copier le WAD si nécessaire (assumer qu'il est dans games/DOOM.WAD)
-wad_path = "../games/DOOM.WAD"
+script_dir = os.path.dirname(os.path.abspath(__file__))
+wad_path = os.path.join(script_dir, "../../games/DOOM.WAD")
+wad_path = os.path.abspath(wad_path)
 if not os.path.exists(wad_path):
     print(f"❌ WAD non trouvé à {wad_path}")
     print("   Placez DOOM.WAD dans le dossier games/")
@@ -37,30 +39,30 @@ print(f"✅ WAD trouvé : {wad_path}")
 # Enregistrer un environnement personnalisé VizDoom
 register(
     id='VizdoomBasicCustom-v0',
-    entry_point='vizdoom.gymnasium_wrapper:VizdoomEnv',
-    kwargs={'scenario': 'basic', 'wad': wad_path}
+    entry_point='vizdoom.gymnasium_wrapper.gymnasium_env_defns:VizdoomScenarioEnv',
+    kwargs={'scenario_file': os.path.join(script_dir, 'basic_custom.cfg')}
 )
 
 # Créer l'environnement
-env = gymnasium.make('VizdoomBasicCustom-v0')
+env = gymnasium.make('VizdoomBasicCustom-v0', render_mode="human")
 print(f"✅ Environnement créé : VizdoomBasicCustom-v0")
 print(f"   - Espace d'observation : {env.observation_space}")
 print(f"   - Espace d'action : {env.action_space}")
 
-# Créer le modèle PPO avec CNN pour les images
+# Créer le modèle PPO avec MultiInputPolicy pour les dict observations
 model = PPO(
-    "CnnPolicy",  # Utilise CNN pour traiter les images
+    "MultiInputPolicy",  # Utilise MultiInputPolicy pour traiter les dict observations
     env,
     n_steps=2048,
     batch_size=64,
     n_epochs=10,
     learning_rate=1e-4,  # Plus petit pour stabilité
     verbose=1,
-    device="cpu"  # ou "cuda" si GPU
+    device="cuda"  # Utilise GPU NVIDIA
 )
 
 print(f"\n✅ Modèle PPO créé avec les hyperparamètres")
-print(f"   - Policy : CnnPolicy (pour images)")
+print(f"   - Policy : MultiInputPolicy (pour dict observations)")
 print(f"   - Learning rate : 1e-4")
 print(f"   - N steps : 2048")
 print(f"   - Batch size : 64")
