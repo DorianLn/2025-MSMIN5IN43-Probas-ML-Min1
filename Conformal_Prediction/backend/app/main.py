@@ -113,7 +113,8 @@ def predict_endpoint(req: PredictRequest):
 
 @app.post("/predict_single", response_model=PredictResponseItem)
 def predict_single_endpoint(req: PredictSingleRequest):
-    model_filename = "ames_rf_mapie.joblib"
+    # model_filename = "ames_rf_mapie.joblib"
+    model_filename = "ames_gb_mapie.joblib"
     path = os.path.join(MODELS_DIR, model_filename)
     try:
         model_obj = load_model(path)
