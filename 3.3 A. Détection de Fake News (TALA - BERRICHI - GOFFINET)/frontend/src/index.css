@@ -1,0 +1,114 @@
+/* ------------------------------------------------------------ */
+/* FONTS */
+/* ------------------------------------------------------------ */
+@import "@fontsource/crimson-pro/400.css";
+@import "@fontsource/crimson-pro/600.css";
+@import "@fontsource/crimson-pro/700.css";
+@import "@fontsource/dm-sans/400.css";
+@import "@fontsource/dm-sans/500.css";
+@import "@fontsource/dm-sans/600.css";
+@import "@fontsource/dm-sans/700.css";
+
+/* ------------------------------------------------------------ */
+/* TAILWIND BASE / COMPONENTS / UTILITIES */
+/* ------------------------------------------------------------ */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ------------------------------------------------------------ */
+/* VARIABLES ET BASE STYLES */
+/* ------------------------------------------------------------ */
+@layer base {
+  :root {
+    /* Palette principale - Photo 2 Look */
+    --background: 210 20% 98%;
+    --foreground: 220 30% 12%;
+    
+    --card: 0 0% 100%;
+    --card-foreground: 220 30% 12%;
+    
+    --primary: 220 45% 20%;
+    --primary-foreground: 210 40% 98%;
+    
+    --secondary: 210 20% 94%;
+    --secondary-foreground: 220 30% 20%;
+    
+    --muted: 210 15% 92%;
+    --muted-foreground: 215 15% 50%;
+    
+    /* Couleur Turquoise/Aqua pour "Fake News" et boutons */
+    --accent: 185 60% 45%;
+    --accent-foreground: 0 0% 100%;
+    
+    --reliable: 160 65% 40%;
+    --reliable-foreground: 0 0% 100%;
+    
+    --unreliable: 0 70% 55%;
+    --unreliable-foreground: 0 0% 100%;
+    
+    --border: 214 20% 88%;
+    --input: 214 20% 88%;
+    --ring: 185 60% 45%;
+    --radius: 0.75rem;
+
+    /* Shadows & Glows */
+    --shadow-md: 0 4px 6px -1px hsl(220 30% 12% / 0.08), 0 2px 4px -2px hsl(220 30% 12% / 0.05);
+    --shadow-glow: 0 0 40px hsl(185 60% 45% / 0.25);
+  }
+
+  .dark {
+    --background: 222 35% 8%;
+    --foreground: 210 40% 96%;
+    --card: 222 30% 12%;
+    --card-foreground: 210 40% 96%;
+    --primary: 185 60% 55%;
+    --primary-foreground: 220 30% 10%;
+    --accent: 185 55% 50%;
+    --accent-foreground: 220 30% 10%;
+    --border: 220 25% 20%;
+  }
+
+  * {
+    border-color: hsl(var(--border));
+  }
+
+  body {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-family: "DM Sans", system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+}
+
+/* ------------------------------------------------------------ */
+/* UTILITIES - UNIQUEMENT LES CLASSES COMPLEXES */
+/* ------------------------------------------------------------ */
+@layer utilities {
+  /* On ne définit PAS .text-accent ici pour laisser Tailwind le faire */
+  
+  .glass {
+    background-color: hsl(var(--card) / 0.8);
+    backdrop-filter: blur(24px);
+  }
+
+  .text-gradient-aqua {
+    background: linear-gradient(to right, #56b3b4, #3a8d8e);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+}
+
+/* ------------------------------------------------------------ */
+/* SCROLLBAR */
+/* ------------------------------------------------------------ */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background-color: hsl(var(--muted) / 0.5);
+}
+::-webkit-scrollbar-thumb {
+  background-color: hsl(var(--muted-foreground) / 0.3);
+  border-radius: 9999px;
+}

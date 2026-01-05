@@ -1,0 +1,128 @@
+<div class="background-container"></div>
+<div class="content-wrapper">
+
+  <!-- Header -->
+  <header class="page-header">
+    <div class="logo-container">
+      <svg class="logo-icon" width="40" height="40" viewBox="0 0 100 100" fill="none"
+        xmlns="http://www.w3.org/2000/svg">
+        <path d="M50 10L90 40V90H60V60H40V90H10V40L50 10Z" stroke="white" stroke-width="5" />
+      </svg>
+      <span class="logo-text scintillant-text">Estimo</span>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main-content">
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+      <h1 class="hero-title scintillant-text">Estimo : L'Élégance de la précision au service de votre patrimoine.</h1>
+    </section>
+
+    <!-- How it works -->
+    <section class="how-it-works">
+      <div class="how-it-works-grid">
+        <div class="how-it-works-item">
+          <div class="how-it-works-icon">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 3v18h18" />
+              <path d="M7 12l5-5 4 4 5-5" />
+            </svg>
+          </div>
+          <h3>Analyse Structurelle</h3>
+          <p>Nous utilisons des algorithmes pour évaluer la qualité intrinsèque de votre bâti, du zonage à la condition
+            des matériaux.</p>
+        </div>
+        <div class="how-it-works-item">
+          <div class="how-it-works-icon">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+              stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10" />
+              <circle cx="12" cy="12" r="6" />
+              <circle cx="12" cy="12" r="2" />
+            </svg>
+          </div>
+          <h3>Précision Chirurgicale</h3>
+          <p>En croisant les données historiques de votre quartier avec les tendances actuelles, Estimo vous livre un
+            prix au m² ajusté.</p>
+        </div>
+        <div class="how-it-works-item">
+          <div class="how-it-works-icon">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+            </svg>
+          </div>
+          <h3>L'Expertise Gemini</h3>
+          <p>Notre moteur de recommandation traite vos critères pour extraire une valeur de marché objective.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Estimation Block Wrapper -->
+    <div class="estimation-block-wrapper">
+      <!-- Simulator Intro -->
+      <div class="simulator-intro">
+        <p>Définissez les différentes caractéristiques de votre bien en quelques clics<br>obtenir une estimation via un
+          intervalle de confiance.</p>
+      </div>
+
+      <!-- Simulator -->
+      <div class="simulator-controls">
+        <mat-accordion>
+          <mat-expansion-panel *ngFor="let group of featureGroups">
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                {{ group.name }}
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+            <div class="form-container">
+              <div *ngFor="let feature of group.features" class="form-field-wrapper">
+                <mat-form-field appearance="outline" class="form-field">
+                  <mat-label>{{ feature.display }}</mat-label>
+                  <input matInput [type]="isNumeric(feature.original) ? 'number' : 'text'"
+                    [(ngModel)]="formData[feature.original]" [name]="feature.original">
+                </mat-form-field>
+              </div>
+            </div>
+          </mat-expansion-panel>
+        </mat-accordion>
+
+        <!-- Confidence Slider -->
+        <div class="slider-container">
+          <label class="slider-label">Niveau de confiance ({{confidence}}%).</label>
+          <mat-slider min="80" max="99" step="1" discrete="true">
+            <input matSliderThumb [(ngModel)]="confidence">
+          </mat-slider>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="submit-container">
+          <button mat-raised-button class="submit-button" (click)="onSubmit()" [disabled]="isLoading">
+            <span *ngIf="!isLoading">Générer l'expertise immobilière</span>
+            <mat-spinner *ngIf="isLoading" diameter="24"></mat-spinner>
+          </button>
+        </div>
+      </div>
+
+      <!-- Results -->
+      <div class="results-container" [class.fading]="isFading">
+        <div *ngIf="lowerBound !== null && upperBound !== null && prediction !== null && !isLoading">
+          <p class="result-label">Voici votre zone de prédiction sécurisée.</p>
+          <p class="interval-text scintillant-text">{{ lowerBound | number:'1.0-0' }}€ &mdash; <strong>{{ prediction | number:'1.0-0' }}€</strong> &mdash; {{ upperBound | number:'1.0-0' }}€</p>
+        </div>
+        <div *ngIf="predictionError" class="error-message">
+          <p>{{ predictionError }}</p>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="page-footer">
+    <p>Estimo © 2026 — La technologie au service de votre sérénité immobilière.</p>
+  </footer>
+</div>

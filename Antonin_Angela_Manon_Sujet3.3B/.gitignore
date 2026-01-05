@@ -1,0 +1,71 @@
+# Fichier .gitignore pour le projet NLP
+
+# Environnement virtuel
+venv/
+env/
+ENV/
+.venv/
+
+# Fichiers Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Jupyter Notebooks
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# Données - On garde les datasets du projet (petits fichiers)
+# Mais on ignore les gros fichiers si ajoutés plus tard
+# data/raw/
+# data/processed/
+# *.csv
+# !requirements.txt
+
+# Ignorer seulement les très gros fichiers de données
+data/**/*.parquet
+data/**/*.h5
+data/**/*.hdf5
+data/**/*.feather
+
+# Modèles entraînés (trop volumineux)
+models/*.pt
+models/*.pth
+models/*.bin
+models/*.h5
+*.ckpt
+
+# Résultats et logs
+results/
+logs/
+runs/
+wandb/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Weights & Biases
+wandb/
+
+# TensorBoard
+events.out.tfevents.*
+
+# Tests
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Distribution
+build/
+dist/
+*.egg-info/

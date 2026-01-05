@@ -1,0 +1,105 @@
+# Configuration pour le modèle MMM Bayésien
+
+# Paramètres du modèle
+model:
+  name: "mmm_baseline"
+  description: "Modèle MMM de base avec adstock géométrique et saturation de Hill"
+  
+  # Transformations
+  adstock:
+    l_max: 8  # Nombre max de périodes de persistance
+    normalize: true  # Normaliser les poids d'adstock
+    
+  saturation:
+    slope: 1.0  # Pente de la courbe de Hill (défaut = 1.0)
+
+# Priors bayésiens (à affiner après EDA)
+priors:
+  # Intercept
+  intercept:
+    distribution: "Normal"
+    mu: 0
+    sigma: 100
+  
+  # Coefficients des canaux
+  channel_coefficients:
+    distribution: "HalfNormal"
+    sigma: 1.0
+  
+  # Paramètres d'adstock par canal
+  adstock_alpha:
+    distribution: "Beta"
+    alpha: 2
+    beta: 2
+    # Priors informatifs possibles :
+    # - TV : Beta(3, 2) → plus de persistance
+    # - Digital : Beta(2, 3) → moins de persistance
+  
+  # Paramètres de saturation par canal
+  saturation_k:
+    distribution: "Gamma"
+    alpha: 2.0
+    beta: 0.01
+  
+  # Écart-type du bruit
+  sigma:
+    distribution: "HalfNormal"
+    sigma: 50
+
+# Configuration MCMC
+sampling:
+  draws: 2000  # Nombre d'échantillons MCMC
+  tune: 1000   # Nombre d'échantillons de warm-up
+  chains: 4    # Nombre de chaînes parallèles
+  target_accept: 0.95  # Taux d'acceptation cible
+  
+  # Diagnostics
+  convergence:
+    r_hat_threshold: 1.01  # Seuil pour Gelman-Rubin
+    ess_threshold: 400     # Effective sample size minimum
+
+# Données
+data:
+  # Colonnes des dépenses publicitaires
+  media_channels:
+    - "tv_spend"
+    - "facebook_spend"
+    - "google_ads_spend"
+    - "radio_spend"
+    - "newsletter_spend"
+  
+  # Variable cible
+  target: "sales"
+  
+  # Variables de contrôle (optionnel)
+  control_variables:
+    - "trend"
+    - "season"
+    - "events"
+  
+  # Split train/test
+  train_ratio: 0.8
+  
+  # Normalisation
+  normalize_media: true
+  normalize_target: false
+
+# Optimisation budgétaire
+optimization:
+  total_budget: 1000000  # Budget total en €
+  min_spend_per_channel: 10000  # Dépense minimum par canal
+  max_spend_per_channel: 500000  # Dépense maximum par canal
+
+# Visualisations
+visualization:
+  plot_style: "seaborn"
+  figure_size: [12, 8]
+  save_format: "png"
+  dpi: 300
+
+# Chemins
+paths:
+  data_dir: "data/"
+  results_dir: "results/"
+  models_dir: "results/models/"
+  figures_dir: "results/figures/"
