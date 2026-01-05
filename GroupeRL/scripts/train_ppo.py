@@ -1,5 +1,5 @@
 """
-Entraînement d'un agent PPO sur Doom (VizDoom)
+Entraînement d'un agent PPO sur Doom (VizDoom) - Scénario Custom
 Utilise le WAD Ultimate Doom fourni
 """
 
@@ -24,8 +24,10 @@ except ImportError:
     print("   Note: Nécessite Python 3.11 ou antérieur pour pygame.")
     exit(1)
 
-# Copier le WAD si nécessaire (assumer qu'il est dans ../games/DOOM.WAD)
-wad_path = "../games/DOOM.WAD"
+# Copier le WAD si nécessaire (assumer qu'il est dans games/DOOM.WAD)
+script_dir = os.path.dirname(os.path.abspath(__file__))
+wad_path = os.path.join(script_dir, "../games/DOOM.WAD")
+wad_path = os.path.abspath(wad_path)
 if not os.path.exists(wad_path):
     print(f"❌ WAD non trouvé à {wad_path}")
     print("   Placez DOOM.WAD dans le dossier games/")
@@ -36,51 +38,47 @@ print(f"✅ WAD trouvé : {wad_path}")
 # Enregistrer un environnement personnalisé VizDoom
 register(
     id='VizdoomBasicCustom-v0',
-    entry_point='vizdoom.gymnasium_wrapper:VizdoomEnv',
-    kwargs={'scenario': 'basic', 'wad': wad_path}
+    entry_point='vizdoom.gymnasium_wrapper.gymnasium_env_defns:VizdoomScenarioEnv',
+    kwargs={'scenario_file': os.path.join(script_dir, 'basic_custom.cfg')}
 )
 
 # Créer l'environnement
-env = gymnasium.make('VizdoomBasicCustom-v0')
+# render_mode=None est beaucoup plus rapide pour l'entraînement (pas d'affichage fenêtre)
+env = gymnasium.make('VizdoomBasicCustom-v0', render_mode=None)
 print(f"✅ Environnement créé : VizdoomBasicCustom-v0")
 print(f"   - Espace d'observation : {env.observation_space}")
 print(f"   - Espace d'action : {env.action_space}")
 
-# Créer le modèle PPO avec CNN pour les images
+# Créer le modèle PPO avec MultiInputPolicy pour les dict observations
 model = PPO(
-    "CnnPolicy",  # Utilise CNN pour traiter les images
+    "MultiInputPolicy",  # Utilise MultiInputPolicy pour traiter les dict observations
     env,
-    n_steps=2048,
-    batch_size=64,
+    n_steps=4096,        # Augmenté pour collecter plus de données avant mise à jour
+    batch_size=2048,     # Augmenté pour 8Go VRAM
     n_epochs=10,
     learning_rate=1e-4,  # Plus petit pour stabilité
     verbose=1,
-    device="cpu"  # ou "cuda" si GPU
+    device="cuda"  # Utilise GPU NVIDIA
 )
 
 print(f"\n✅ Modèle PPO créé avec les hyperparamètres")
-print(f"   - Policy : CnnPolicy (pour images)")
+print(f"   - Policy : MultiInputPolicy (pour dict observations)")
 print(f"   - Learning rate : 1e-4")
-print(f"   - N steps : 2048")
-print(f"   - Batch size : 64")
+print(f"   - N steps : 4096")
+print(f"   - Batch size : 2048")
 print(f"   - N epochs : 10")
 
 # Entraîner le modèle
-print(f"\n⏳ Entraînement en cours... (50,000 timesteps)")
+print(f"\n⏳ Entraînement en cours... (10,000 timesteps)")
 print(f"   Doom est complexe, cela peut prendre du temps...")
 print("-" * 60)
 
-model.learn(total_timesteps=50000)
+model.learn(total_timesteps=10000)
 
 # Sauvegarder le modèle
-model.save("models/ppo_doom")
+model.save("models/ppo_doom_custom")
 print("-" * 60)
 print(f"\n✅ Entraînement PPO sur Doom terminé avec succès !")
-print(f"   Modèle sauvegardé : models/ppo_doom.zip")
+print(f"   Modèle sauvegardé : models/ppo_doom_custom.zip")
 
 env.close()
-print(f"   Modèle sauvegardé : models/ppo_cartpole.zip")
-
-env.close()
-print("✅ Environnement fermé")
-print("=" * 60)

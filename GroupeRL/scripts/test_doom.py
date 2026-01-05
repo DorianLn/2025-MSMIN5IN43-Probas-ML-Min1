@@ -32,12 +32,12 @@ print(f"✅ WAD trouvé : {wad_path}")
 # Enregistrer l'environnement
 register(
     id='VizdoomBasicCustom-v0',
-    entry_point='vizdoom.gymnasium_wrapper:VizdoomEnv',
-    kwargs={'scenario': 'basic', 'wad': wad_path}
+    entry_point='vizdoom.gymnasium_wrapper.gymnasium_env_defns:VizdoomScenarioEnv',
+    kwargs={'scenario_file': os.path.join(script_dir, 'basic_custom.cfg')}
 )
 
 # Créer l'environnement
-env = gymnasium.make('VizdoomBasicCustom-v0')
+env = gymnasium.make('VizdoomBasicCustom-v0', render_mode="human")
 
 # Charger le modèle
 model_path = "models/ppo_doom"
