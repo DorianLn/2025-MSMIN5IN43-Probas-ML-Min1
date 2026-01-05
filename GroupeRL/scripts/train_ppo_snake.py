@@ -49,7 +49,7 @@ print(f"\n⏳ Entraînement en cours... (500,000 timesteps)")
 print(f"   Cela devrait prendre environ 10-15 minutes...")
 print("-" * 60)
 
-model.learn(total_timesteps=500000)
+model.learn(total_timesteps=1000000)
 
 # Sauvegarder
 model.save("models/ppo_snake")
